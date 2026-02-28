@@ -535,3 +535,24 @@ body {
     background: #1c1c1e;
     color: white;
 }
+/* ===== HIGHLIGHT CARD ===== */
+
+.produs-highlight {
+    grid-column: span 3;
+}
+
+.produs-highlight img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    background: #f5f5f5;
+    border-radius: 12px;
+}
+
+.produs-highlight .produs-meta h3 {
+    font-size: 22px;
+}
+
+.produs-highlight .pret {
+    font-size: 18px;
+}

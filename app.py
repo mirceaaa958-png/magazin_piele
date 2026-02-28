@@ -8,49 +8,70 @@ DATABASE = "magazin.db"
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+
 def get_db():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
 
+
 @app.route("/")
 def landing():
     return render_template("landing.html")
 
+
+def produse_cu_highlight(categorie):
+    db = get_db()
+    rows = db.execute(
+        "SELECT * FROM produse WHERE categorie = ? AND status = 1",
+        (categorie,)
+    ).fetchall()
+
+    normale = [p for p in rows if p["highlight"] == 0]
+    highlight = [p for p in rows if p["highlight"] == 1]
+
+    produse = []
+    i = 0
+    h = 0
+
+    while i < len(normale):
+        produse.extend(normale[i:i+6])
+        i += 6
+
+        if h < len(highlight):
+            produse.append(highlight[h])
+            h += 1
+
+    return produse
+
+
 @app.route("/femei")
 def femei():
-    db = get_db()
-    produse = db.execute(
-        "SELECT * FROM produse WHERE categorie = ? AND status = 1",
-        ("Femei",)
-    ).fetchall()
+    produse = produse_cu_highlight("Femei")
     return render_template("categorie.html", categorie="Femei", produse=produse)
+
 
 @app.route("/barbati")
 def barbati():
-    db = get_db()
-    produse = db.execute(
-        "SELECT * FROM produse WHERE categorie = ? AND status = 1",
-        ("Bărbați",)
-    ).fetchall()
+    produse = produse_cu_highlight("Bărbați")
     return render_template("categorie.html", categorie="Bărbați", produse=produse)
+
 
 @app.route("/copii")
 def copii():
-    db = get_db()
-    produse = db.execute(
-        "SELECT * FROM produse WHERE categorie = ? AND status = 1",
-        ("Copii",)
-    ).fetchall()
+    produse = produse_cu_highlight("Copii")
     return render_template("categorie.html", categorie="Copii", produse=produse)
+
 
 @app.route("/cos")
 def cos():
     return render_template("cos.html")
 
+
 @app.route("/login")
 def login():
     return render_template("login.html")
+
 
 @app.route("/admin")
 def admin():
@@ -58,12 +79,14 @@ def admin():
     produse = db.execute("SELECT * FROM produse").fetchall()
     return render_template("admin.html", produse=produse)
 
+
 @app.route("/admin/sterge/<int:id>")
 def admin_sterge(id):
     db = get_db()
     db.execute("DELETE FROM produse WHERE id = ?", (id,))
     db.commit()
     return redirect("/admin")
+
 
 @app.route("/admin/toggle/<int:id>")
 def admin_toggle(id):
@@ -79,6 +102,8 @@ def admin_toggle(id):
     db.commit()
 
     return redirect("/admin")
+
+
 @app.route("/admin/edit/<int:id>", methods=["GET", "POST"])
 def admin_edit(id):
     db = get_db()
@@ -88,6 +113,8 @@ def admin_edit(id):
         pret = request.form["pret"]
         descriere = request.form["descriere"]
         categorie = request.form["categorie"]
+        status = request.form["status"]
+        highlight = request.form["highlight"]
 
         file = request.files.get("imagine")
 
@@ -98,13 +125,13 @@ def admin_edit(id):
             imagine = "/" + filepath.replace("\\", "/")
 
             db.execute(
-                "UPDATE produse SET nume=?, pret=?, imagine=?, descriere=?, categorie=? WHERE id=?",
-                (nume, pret, imagine, descriere, categorie, id)
+                "UPDATE produse SET nume=?, pret=?, imagine=?, descriere=?, categorie=?, status=?, highlight=? WHERE id=?",
+                (nume, pret, imagine, descriere, categorie, status, highlight, id)
             )
         else:
             db.execute(
-                "UPDATE produse SET nume=?, pret=?, descriere=?, categorie=? WHERE id=?",
-                (nume, pret, descriere, categorie, id)
+                "UPDATE produse SET nume=?, pret=?, descriere=?, categorie=?, status=?, highlight=? WHERE id=?",
+                (nume, pret, descriere, categorie, status, highlight, id)
             )
 
         db.commit()
@@ -112,6 +139,7 @@ def admin_edit(id):
 
     produs = db.execute("SELECT * FROM produse WHERE id=?", (id,)).fetchone()
     return render_template("admin_edit.html", produs=produs)
+
 
 @app.route("/admin/adauga", methods=["GET", "POST"])
 def admin_adauga():
@@ -121,6 +149,7 @@ def admin_adauga():
         descriere = request.form["descriere"]
         categorie = request.form["categorie"]
         status = request.form["status"]
+        highlight = request.form["highlight"]
 
         file = request.files.get("imagine")
         imagine = ""
@@ -133,14 +162,15 @@ def admin_adauga():
 
         db = get_db()
         db.execute(
-            "INSERT INTO produse (nume, pret, imagine, descriere, categorie, status) VALUES (?, ?, ?, ?, ?, ?)",
-             (nume, pret, imagine, descriere, categorie, status)
+            "INSERT INTO produse (nume, pret, imagine, descriere, categorie, status, highlight) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (nume, pret, imagine, descriere, categorie, status, highlight)
         )
         db.commit()
 
         return redirect("/admin")
 
     return render_template("admin.html")
+
 
 def init_db():
     db = get_db()
@@ -153,7 +183,8 @@ def init_db():
             imagine TEXT NOT NULL,
             descriere TEXT,
             categorie TEXT,
-            status INTEGER DEFAULT 1
+            status INTEGER DEFAULT 1,
+            highlight INTEGER DEFAULT 0
         )
     """)
 
@@ -162,7 +193,13 @@ def init_db():
     except:
         pass
 
+    try:
+        db.execute("ALTER TABLE produse ADD COLUMN highlight INTEGER DEFAULT 0")
+    except:
+        pass
+
     db.commit()
+
 
 init_db()
 
