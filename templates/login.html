@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LETHARÉ Cont</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="auth-split">
+
+    <div class="auth-image"></div>
+
+    <div class="auth-panel">
+        <div class="auth-wrap">
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="showTab('login')">Autentificare</div>
+                <div class="auth-tab" onclick="showTab('register')">Creează cont</div>
+            </div>
+
+            <div id="login" class="auth-box">
+                <label>Email *</label>
+                <input type="email" class="auth-input">
+
+                <label>Parolă *</label>
+                <input type="password" class="auth-input">
+
+                <div class="auth-row">
+                    <a href="#" class="auth-link">Ai uitat parola?</a>
+                    <span class="auth-required">*Obligatoriu</span>
+                </div>
+
+                <label class="auth-remember">
+                    <input type="checkbox">
+                    Ține-mă minte pentru o experiență personalizată
+                </label>
+
+                <button class="auth-btn">AUTENTIFICARE</button>
+
+                <a href="javascript:history.back()" class="auth-back">
+                    <svg viewBox="0 0 100 10" preserveAspectRatio="none">
+                       <line x1="10" y1="5" x2="100" y2="5"/>
+                       <polyline points="10,1 0,5 10,9"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div id="register" class="auth-box" style="display:none;">
+                <label>Nume *</label>
+                <input type="text" class="auth-input">
+
+                <label>Email *</label>
+                <input type="email" class="auth-input">
+
+                <label>Parolă *</label>
+                <input type="password" class="auth-input">
+
+                <label>Confirmă parola *</label>
+                <input type="password" class="auth-input">
+
+                <div class="auth-row">
+                    <span></span>
+                    <span class="auth-required">*Obligatoriu</span>
+                </div>
+
+                <label class="auth-remember">
+                    <input type="checkbox">
+                    Sunt de acord cu termenii și condițiile
+                </label>
+
+                <button class="auth-btn">CREEAZĂ CONT</button>
+
+                <a href="javascript:history.back()" class="auth-back">
+                    <svg viewBox="0 0 100 10" preserveAspectRatio="none">
+                       <line x1="10" y1="5" x2="100" y2="5"/>
+                       <polyline points="10,1 0,5 10,9"/>
+                    </svg>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+function showTab(tab) {
+    document.getElementById("login").style.display = tab === "login" ? "flex" : "none";
+    document.getElementById("register").style.display = tab === "register" ? "flex" : "none";
+
+    document.querySelectorAll(".auth-tab").forEach(t => t.classList.remove("active"));
+    event.target.classList.add("active");
+}
+</script>
+
+</body>
+</html>
