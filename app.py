@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
 import os
 
 app = Flask(__name__)
-
+app.secret_key = "lethare-secret"
 DATABASE = "magazin.db"
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -61,12 +61,114 @@ def barbati():
 def copii():
     produse = produse_cu_highlight("Copii")
     return render_template("categorie.html", categorie="Copii", produse=produse)
+@app.route("/produs/<int:id>")
+def produs(id):
+    db = get_db()
+    produs = db.execute(
+        "SELECT * FROM produse WHERE id=?",
+        (id,)
+    ).fetchone()
 
+    return render_template("produs.html", produs=produs)
+@app.route("/cos/adauga/<int:id>")
+def cos_adauga(id):
+    cos = session.get("cos", {})
 
+    if str(id) in cos:
+        cos[str(id)] += 1
+    else:
+        cos[str(id)] = 1
+
+    session["cos"] = cos
+
+    return redirect(request.referrer or "/")
+@app.route("/cos/remove/<int:id>")
+def cos_remove(id):
+    cos = session.get("cos", {})
+
+    if str(id) in cos:
+        del cos[str(id)]
+
+    session["cos"] = cos
+    return redirect("/cos")
+@app.route("/cos/update/<int:id>/<int:cant>")
+def cos_update(id, cant):
+    cos = session.get("cos", {})
+
+    if cant <= 0:
+        cos.pop(str(id), None)
+    else:
+        cos[str(id)] = cant
+
+    session["cos"] = cos
+    return redirect("/cos")
 @app.route("/cos")
 def cos():
-    return render_template("cos.html")
+    cos = session.get("cos", {})
 
+    produse = []
+    total = 0
+
+    if cos:
+        db = get_db()
+        ids = [int(i) for i in cos.keys()]
+        query = f"SELECT * FROM produse WHERE id IN ({','.join(['?']*len(ids))})"
+        rows = db.execute(query, ids).fetchall()
+
+        for p in rows:
+            cant = cos.get(str(p["id"]), 0)
+            subtotal = p["pret"] * cant
+            total += subtotal
+
+            produse.append({
+                "id": p["id"],
+                "nume": p["nume"],
+                "pret": p["pret"],
+                "imagine": p["imagine"],
+                "cantitate": cant,
+                "subtotal": subtotal
+            })
+
+    return render_template("cos.html", produse=produse, total=total)
+
+@app.route("/checkout", methods=["GET", "POST"])
+def checkout():
+    cos = session.get("cos", {})
+
+    if not cos:
+        return redirect("/cos")
+
+    db = get_db()
+
+    ids = [int(i) for i in cos.keys()]
+    query = f"SELECT * FROM produse WHERE id IN ({','.join(['?']*len(ids))})"
+    rows = db.execute(query, ids).fetchall()
+
+    total = 0
+    produse = []
+
+    for p in rows:
+        cant = cos.get(str(p["id"]), 0)
+        subtotal = p["pret"] * cant
+        total += subtotal
+        produse.append((p["nume"], cant, subtotal))
+
+    if request.method == "POST":
+        nume = request.form["nume"]
+        email = request.form["email"]
+        telefon = request.form["telefon"]
+        adresa = request.form["adresa"]
+
+        db.execute(
+            "INSERT INTO comenzi (nume, email, telefon, adresa, total, data) VALUES (?, ?, ?, ?, ?, datetime('now'))",
+            (nume, email, telefon, adresa, total)
+        )
+        db.commit()
+
+        session["cos"] = {}
+        return render_template("confirmare.html", total=total)
+
+    return render_template("checkout.html", produse=produse, total=total)
 
 @app.route("/login")
 def login():
@@ -75,10 +177,19 @@ def login():
 
 @app.route("/admin")
 def admin():
-    db = get_db()
-    produse = db.execute("SELECT * FROM produse").fetchall()
-    return render_template("admin.html", produse=produse)
+    categorie = request.args.get("categorie")
 
+    db = get_db()
+
+    if categorie and categorie != "Toate":
+        produse = db.execute(
+            "SELECT * FROM produse WHERE categorie=?",
+            (categorie,)
+        ).fetchall()
+    else:
+        produse = db.execute("SELECT * FROM produse").fetchall()
+
+    return render_template("admin.html", produse=produse, categorie=categorie)
 
 @app.route("/admin/sterge/<int:id>")
 def admin_sterge(id):
@@ -185,6 +296,17 @@ def init_db():
             categorie TEXT,
             status INTEGER DEFAULT 1,
             highlight INTEGER DEFAULT 0
+        )
+    """)
+    db.execute("""
+        CREATE TABLE IF NOT EXISTS comenzi (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nume TEXT,
+            email TEXT,
+            telefon TEXT,
+            adresa TEXT,
+            total REAL,
+            data TEXT
         )
     """)
 

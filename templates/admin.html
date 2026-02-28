@@ -17,12 +17,14 @@
             <input type="text" name="nume" placeholder="Nume produs" required>
             <textarea name="descriere" placeholder="Descriere"></textarea>
             <input type="number" step="0.01" name="pret" placeholder="Preț" required>
+
             <select name="categorie" required>
                 <option value="">Categorie</option>
                 <option value="Femei">Femei</option>
                 <option value="Bărbați">Bărbați</option>
                 <option value="Copii">Copii</option>
             </select>
+
             <select name="status">
                 <option value="1">Activ</option>
                 <option value="0">Inactiv</option>
@@ -32,6 +34,7 @@
                 <option value="0">Normal</option>
                 <option value="1">Highlight</option>
             </select>
+
             <input type="file" name="imagine" accept="image/*" required>
 
             <button type="submit">Adaugă produs</button>
@@ -40,26 +43,51 @@
 
     <!-- CONTENT -->
     <div class="admin-content">
-        <h2>Produse</h2>
 
-        <div class="admin-table">
-            {% for p in produse %}
-            <div class="admin-row">
-                <img src="{{ p.imagine }}">
-                <div class="admin-row-info">
-                    <strong>{{ p.nume }}</strong>
-                    <span>{{ p.pret }} €</span>
-                </div>
-                <a href="/admin/toggle/{{ p.id }}" class="admin-status">
-                    {% if p.status == 1 %}
-                        Activ
-                    {% else %}
-                        Inactiv
-                    {% endif %}
-                </a>
-                <a href="/admin/sterge/{{ p.id }}" class="admin-delete">Șterge</a>
+        <!-- HEADER FIX -->
+        <div class="admin-header">
+            <h2>Produse</h2>
+
+            <div class="admin-filter">
+                <a href="/admin">Toate</a>
+                <a href="/admin?categorie=Femei">Femei</a>
+                <a href="/admin?categorie=Bărbați">Bărbați</a>
+                <a href="/admin?categorie=Copii">Copii</a>
             </div>
-            {% endfor %}
+        </div>
+
+        <!-- LIST SCROLL -->
+        <div class="admin-list-scroll">
+            <div class="admin-table">
+                {% for p in produse %}
+                <div class="admin-row">
+                    <img src="{{ p.imagine }}">
+
+                    <div class="admin-row-info">
+                        <strong>{{ p.nume }}</strong>
+                        <span>{{ p.pret }} €</span>
+
+                        <div class="admin-badges">
+                            <span class="badge-cat">{{ p.categorie }}</span>
+
+                            {% if p.highlight == 1 %}
+                                <span class="badge-highlight">Highlight</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <a href="/admin/toggle/{{ p.id }}" class="admin-status">
+                        {% if p.status == 1 %}
+                            Activ
+                        {% else %}
+                            Inactiv
+                        {% endif %}
+                    </a>
+
+                    <a href="/admin/sterge/{{ p.id }}" class="admin-delete">Șterge</a>
+                </div>
+                {% endfor %}
+            </div>
         </div>
 
     </div>

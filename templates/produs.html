@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ produs.nume }} · LETHARÉ</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-left">LETHARÉ</div>
+
+    <div class="nav-center">
+        <a href="/femei">Femei</a>
+        <a href="/barbati">Bărbați</a>
+        <a href="/copii">Copii</a>
+    </div>
+
+    <div class="nav-right">
+        <a href="/cos" class="icon-link">Coș</a>
+    </div>
+</nav>
+
+<div class="produs-page">
+
+    <div class="produs-img">
+        <img src="{{ produs.imagine }}">
+    </div>
+
+    <div class="produs-info-page">
+        <h1>{{ produs.nume }}</h1>
+        <div class="produs-brand">LETHARÉ</div>
+        <div class="produs-pret">{{ produs.pret }} €</div>
+
+        <p class="produs-desc">
+            {{ produs.descriere }}
+        </p>
+
+        <a href="/cos/adauga/{{ produs.id }}" class="btn-cos mare">
+            Adaugă în coș
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,71 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LETHARÉ Coș</title>
+    <title>Coș · LETHARÉ</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-left">LETHARÉ</div>
+<nav class="navbar">
+    <div class="nav-left">LETHARÉ</div>
 
-        <div class="nav-center">
-            <a href="/femei">Femei</a>
-            <a href="/barbati">Bărbați</a>
-            <a href="/copii">Copii</a>
-        </div>
-
-        <div class="nav-right">
-            <svg viewBox="0 0 24 24" class="icon">
-                <circle cx="11" cy="11" r="7" fill="none"/>
-                <line x1="16.5" y1="16.5" x2="21" y2="21"/>
-            </svg>
-
-            <a href="/login" class="icon-link">
-                <svg viewBox="0 0 24 24" class="icon">
-                    <circle cx="12" cy="8" r="4" fill="none"/>
-                    <path d="M4 20c2-4 14-4 16 0" fill="none"/>
-                </svg>
-            </a>
-
-            <a href="/cos" class="icon-link">
-                <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="black" stroke-width="1.5">
-                    <rect x="5" y="7" width="14" height="13"/>
-                    <path d="M9 7a3 3 0 0 1 6 0"/>
-                </svg>
-            </a>
-        </div>
-    </nav>
-
-    <div class="cart-empty">
-        <svg viewBox="0 0 24 24" class="cart-icon">
-            <rect x="4" y="7" width="16" height="13" fill="none"/>
-            <path d="M8 7a4 4 0 0 1 8 0" fill="none"/>
-        </svg>
-
-        <div class="cart-text">
-            COȘUL ESTE MOMENTAN GOL
-        </div>
+    <div class="nav-center">
+        <a href="/femei">Femei</a>
+        <a href="/barbati">Bărbați</a>
+        <a href="/copii">Copii</a>
     </div>
 
-    <footer class="footer">
-        <div class="footer-left">LETHARÉ</div>
+    <div class="nav-right">
+        <a href="/cos">Coș</a>
+    </div>
+</nav>
 
-        <div class="footer-center">
-            Creat de WebGames · Toate drepturile rezervate
+<div class="cos-page">
+
+    <h1>Coșul tău</h1>
+
+    {% if produse %}
+        <div class="cos-lista">
+            {% for p in produse %}
+                <div class="cos-item">
+                    <img src="{{ p.imagine }}">
+
+                    <div class="cos-info">
+                        <h3>{{ p.nume }}</h3>
+                        <div>{{ p.pret }} €</div>
+                        <div class="cos-qty">
+                            <a href="/cos/update/{{ p.id }}/{{ p.cantitate - 1 }}">−</a>
+                            <span>{{ p.cantitate }}</span>
+                            <a href="/cos/update/{{ p.id }}/{{ p.cantitate + 1 }}">+</a>
+                        </div>
+
+                        <a href="/cos/remove/{{ p.id }}" class="cos-remove">
+                            Șterge
+                        </a>
+                    </div>
+
+                    <div class="cos-subtotal">
+                        {{ p.subtotal }} €
+                    </div>
+                </div>
+            {% endfor %}
         </div>
 
-        <div class="footer-right">
-            <svg viewBox="0 0 24 24" class="footer-icon">
-                <path d="M6.6 10.8c1.6 3.1 3.5 5 6.6 6.6l2.2-2.2c.3-.3.8-.4 1.2-.2 
-                1.3.5 2.6.8 4 .8.7 0 1.2.5 1.2 1.2v3.5c0 .7-.5 1.2-1.2 1.2
-                C11.9 22 2 12.1 2 3.5 2 2.8 2.5 2.3 3.2 2.3H6.7c.7 0 1.2.5 1.2 1.2
-                0 1.4.3 2.7.8 4 .2.4.1.9-.2 1.2l-2 2.1z" fill="none"/>
-            </svg>
-
-            <span>+40 712 345 678</span>
+        <div class="cos-total">
+            Total: {{ total }} €
         </div>
-    </footer>
+        <a href="/checkout" class="cos-checkout">
+           Finalizează comanda
+        </a>
+    {% else %}
+        <div class="cos-empty">
+            Coșul este gol
+        </div>
+    {% endif %}
+
+</div>
 
 </body>
 </html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout · LETHARÉ</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="checkout-page">
+    <h1>Finalizare comandă</h1>
+
+    <div class="checkout-grid">
+        <form method="post" class="checkout-form">
+            <input name="nume" placeholder="Nume" required>
+            <input name="email" placeholder="Email" required>
+            <input name="telefon" placeholder="Telefon" required>
+            <textarea name="adresa" placeholder="Adresă" required></textarea>
+
+            <button type="submit">Plasează comanda</button>
+        </form>
+
+        <div class="checkout-rezumat">
+            <h3>Rezumat</h3>
+
+            {% for nume, cant, subtotal in produse %}
+                <div class="checkout-item">
+                    {{ nume }} × {{ cant }}
+                    <span>{{ subtotal }} €</span>
+                </div>
+            {% endfor %}
+
+            <div class="checkout-total">
+                Total: {{ total }} €
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
