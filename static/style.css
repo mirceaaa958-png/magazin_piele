@@ -1,8 +1,8 @@
 html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
-    overflow: hidden;
+    min-height: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -351,4 +351,187 @@ h1 {
 
 .auth-back:hover svg {
     transform: translateX(-6px);
+}
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.produse-grid {
+    flex: 1;
+}
+
+/* ===== ADMIN DARK LUXURY ===== */
+
+.admin-dark {
+    margin: 0;
+    background: #0f0f10;
+    color: #eee;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+.admin-layout {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.admin-sidebar {
+    background: #151517;
+    padding: 40px 30px;
+    border-right: 1px solid #222;
+}
+
+.admin-sidebar h2 {
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+.admin-sidebar input,
+.admin-sidebar textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    border: 1px solid #2a2a2d;
+    background: #1c1c1f;
+    color: #eee;
+}
+
+.admin-sidebar input::placeholder,
+.admin-sidebar textarea::placeholder {
+    color: #777;
+}
+
+.admin-sidebar button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg,#8b5e3c,#b08968);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* CONTENT */
+.admin-content {
+    padding: 40px;
+}
+
+.admin-content h2 {
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+/* TABLE */
+.admin-table {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-row {
+    display: flex;
+    align-items: center;
+    background: #1a1a1c;
+    padding: 14px;
+    border-radius: 12px;
+}
+
+.admin-row img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 14px;
+}
+
+.admin-row-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-row-info span {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.admin-delete {
+    margin-left: auto;
+    background: #3a1f1f;
+    color: #ff6b6b;
+    padding: 8px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+}
+.admin-status {
+    margin-left: auto;
+    margin-right: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-decoration: none;
+    background: #2a2a2d;
+    color: #ddd;
+}
+.produse-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 40px 60px;
+}
+
+.produs-card img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 12px;
+    transition: 0.4s;
+}
+
+.produs-card:hover img {
+    transform: scale(1.02);
+}
+
+.produs-meta {
+    margin-top: 16px;
+}
+
+.produs-meta h3 {
+    font-size: 18px;
+    margin: 0 0 4px 0;
+}
+
+.brand {
+    font-size: 12px;
+    color: #8a8a8f;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.pret {
+    font-size: 16px;
+    margin-bottom: 14px;
+}
+
+.btn-cos {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #1c1c1e;
+    border-radius: 999px;
+    text-decoration: none;
+    color: #1c1c1e;
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: 0.25s;
+}
+
+.btn-cos:hover {
+    background: #1c1c1e;
+    color: white;
 }

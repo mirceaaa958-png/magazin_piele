@@ -37,9 +37,25 @@
         </div>
     </nav>
 
-    <div class="category-placeholder">
-        COLECȚIA {{ categorie|upper }} ÎN CURÂND
+    <div class="produse-grid">
+    {% for p in produse %}
+    <div class="produs-card">
+        <a href="/produs/{{ p.id }}">
+            <img src="{{ p.imagine }}" alt="{{ p.nume }}">
+        </a>
+
+        <div class="produs-meta">
+            <h3>{{ p.nume }}</h3>
+            <span class="brand">LETHARÉ</span>
+            <div class="pret">{{ p.pret }} €</div>
+
+            <a href="/cos/adauga/{{ p.id }}" class="btn-cos">
+                Adaugă în coș
+            </a>
+        </div>
     </div>
+    {% endfor %}
+</div>
 
     <footer class="footer">
         <div class="footer-left">LETHARÉ</div>
