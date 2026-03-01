@@ -8,6 +8,13 @@ DATABASE = "magazin.db"
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+@app.context_processor
+def inject_client():
+    return dict(
+        client_logat="client_id" in session,
+        client_nume=session.get("client_nume"),
+        client_email=session.get("client_email")
+    )
 
 def get_db():
     conn = sqlite3.connect(DATABASE)
@@ -47,18 +54,21 @@ def produse_cu_highlight(categorie):
 
 @app.route("/femei")
 def femei():
+    session["last_shop"] = request.path
     produse = produse_cu_highlight("Femei")
     return render_template("categorie.html", categorie="Femei", produse=produse)
 
 
 @app.route("/barbati")
 def barbati():
+    session["last_shop"] = request.path
     produse = produse_cu_highlight("Bărbați")
     return render_template("categorie.html", categorie="Bărbați", produse=produse)
 
 
 @app.route("/copii")
 def copii():
+    session["last_shop"] = request.path
     produse = produse_cu_highlight("Copii")
     return render_template("categorie.html", categorie="Copii", produse=produse)
 @app.route("/produs/<int:id>")
@@ -154,14 +164,13 @@ def checkout():
         produse.append((p["nume"], cant, subtotal))
 
     if request.method == "POST":
-        nume = request.form["nume"]
-        email = request.form["email"]
+        email = session.get("client_email") or request.form["email"]
         telefon = request.form["telefon"]
         adresa = request.form["adresa"]
         produse_cmd = str(cos)
         db.execute(
             "INSERT INTO comenzi (nume, email, telefon, adresa, total, data, produse) VALUES (?, ?, ?, ?, ?, datetime('now'), ?)",
-            (nume, email, telefon, adresa, total, produse_cmd)
+            (request.form["nume"], email, telefon, adresa, total, produse_cmd)
        )
         db.commit()
 
@@ -170,11 +179,131 @@ def checkout():
         
     return render_template("checkout.html", produse=produse, total=total)
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    # dacă deja logat → cont
+    if "client_id" in session:
+        return redirect("/cont")
+
+    if request.method == "POST":
+        email = request.form["email"]
+        parola = request.form["parola"]
+
+        db = get_db()
+        client = db.execute(
+            "SELECT * FROM clienti WHERE email=? AND parola=?",
+            (email, parola)
+        ).fetchone()
+
+        if client:
+            session["client_id"] = client["id"]
+            session["client_nume"] = client["nume"]
+            session["client_email"] = client["email"]
+
+            # revine unde era sau cont
+            next_page = request.args.get("next")
+            return redirect(next_page or "/cont")
+
+        else:
+            return "Date incorecte"
+
     return render_template("login.html")
 
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        nume = request.form["nume"]
+        email = request.form["email"]
+        parola = request.form["parola"]
+        telefon = request.form["telefon"]
+
+        db = get_db()
+        try:
+            db.execute(
+                "INSERT INTO clienti (nume, email, parola, telefon) VALUES (?, ?, ?, ?)",
+                (nume, email, parola, telefon)
+            )
+            db.commit()
+            return redirect("/login")
+        except:
+            return "Email deja existent"
+
+    return render_template("register.html")
+
+
+@app.route("/cont")
+def cont():
+    if "client_id" not in session:
+        return redirect("/login")
+
+    return render_template("cont.html")
+@app.route("/logout")
+def logout():
+    session.pop("client_id", None)
+    session.pop("client_nume", None)
+    session.pop("client_email", None)
+    return redirect("/")
+
+@app.route("/cont/comenzi")
+def cont_comenzi():
+    if "client_id" not in session:
+        return redirect("/login")
+
+    db = get_db()
+    comenzi = db.execute(
+        "SELECT * FROM comenzi WHERE email=? ORDER BY data DESC",
+        (session.get("client_email"),)
+    ).fetchall()
+
+    return render_template("cont_comenzi.html", comenzi=comenzi)
+@app.route("/cont/comanda/<int:id>")
+def cont_comanda(id):
+    if "client_id" not in session:
+        return redirect("/login")
+
+    db = get_db()
+
+    c = db.execute(
+        "SELECT * FROM comenzi WHERE id=? AND email=?",
+        (id, session.get("client_email"))
+    ).fetchone()
+
+    if not c:
+        return redirect("/cont/comenzi")
+
+    produse_list = []
+
+    if c["produse"]:
+        cos = eval(c["produse"])
+
+        ids = [int(i) for i in cos.keys()]
+        if ids:
+            query = f"SELECT id, nume, pret, imagine FROM produse WHERE id IN ({','.join(['?']*len(ids))})"
+            produse_db = db.execute(query, ids).fetchall()
+
+            prod_map = {p["id"]: p for p in produse_db}
+
+            for pid, cant in cos.items():
+                p = prod_map.get(int(pid))
+                if p:
+                    produse_list.append({
+                        "nume": p["nume"],
+                        "pret": p["pret"],
+                        "cant": cant,
+                        "subtotal": p["pret"] * cant,
+                        "imagine": p["imagine"]
+                    })
+
+    comanda = {
+        "id": c["id"],
+        "data": c["data"],
+        "status": c["status"],
+        "total": c["total"],
+        "produse": produse_list
+    }
+
+    return render_template("cont_comanda.html", c=comanda)
 @app.route("/admin")
 def admin():
     categorie = request.args.get("categorie")
@@ -401,7 +530,16 @@ def init_db():
             data TEXT
         )
     """)
-
+    db.execute("""
+        CREATE TABLE IF NOT EXISTS clienti (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nume TEXT,
+            email TEXT UNIQUE,
+            parola TEXT,
+            telefon TEXT,
+            data_creare TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
     try:
         db.execute("ALTER TABLE produse ADD COLUMN status INTEGER DEFAULT 1")
     except:

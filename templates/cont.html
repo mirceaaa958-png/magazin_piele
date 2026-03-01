@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contul meu · LETHARÉ</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="account-page">
+
+    <div class="account-box">
+
+        <div class="account-heading">
+            CONTUL MEU
+        </div>
+
+        <div class="account-welcome">
+            Bun venit, {{ session.client_nume }}
+        </div>
+
+        <div class="account-links">
+
+            <a href="/cont/comenzi" class="account-btn">
+                COMENZILE MELE
+            </a>
+
+            <a href="#" class="account-btn">
+                DATELE MELE
+            </a>
+
+            <a href="/logout" class="account-btn">
+                LOGOUT
+            </a>
+
+            <a href="{{ session.get('last_shop', '/femei') }}" class="account-btn">
+                CONTINUĂ CUMPĂRĂTURILE
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

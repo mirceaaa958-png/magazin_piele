@@ -7,24 +7,39 @@
 <body>
 
 <div class="checkout-page">
-    <h1>Finalizare comandă</h1>
+
+    <h1 class="checkout-title">Finalizare comandă</h1>
 
     <div class="checkout-grid">
+
+        <!-- FORM -->
         <form method="post" class="checkout-form">
+
             <input name="nume" placeholder="Nume" required>
-            <input name="email" placeholder="Email" required>
+
+            {% if not client_logat %}
+                <input name="email" placeholder="Email" required>
+            {% else %}
+                <input type="hidden" name="email" value="{{ client_email }}">
+            {% endif %}
+
             <input name="telefon" placeholder="Telefon" required>
             <textarea name="adresa" placeholder="Adresă" required></textarea>
 
-            <button type="submit">Plasează comanda</button>
+            <button type="submit" class="checkout-submit">
+                Plasează comanda
+            </button>
+
         </form>
 
+        <!-- REZUMAT -->
         <div class="checkout-rezumat">
+
             <h3>Rezumat</h3>
 
             {% for nume, cant, subtotal in produse %}
                 <div class="checkout-item">
-                    {{ nume }} × {{ cant }}
+                    <span>{{ nume }} × {{ cant }}</span>
                     <span>{{ subtotal }} €</span>
                 </div>
             {% endfor %}
@@ -32,8 +47,16 @@
             <div class="checkout-total">
                 Total: {{ total }} €
             </div>
+
         </div>
+
     </div>
+
+    <!-- CONTINUE SHOPPING -->
+    <a href="/" class="btn-continue">
+        ← Înapoi la cumpărături
+    </a>
+
 </div>
 
 </body>

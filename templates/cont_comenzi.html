@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comenzile mele</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="account-page">
+    <div class="account-box">
+
+        <div class="account-heading">COMENZILE MELE</div>
+
+        {% if comenzi %}
+            <div class="client-orders">
+            {% for c in comenzi %}
+
+            <div class="order-card">
+
+                <div class="order-top">
+                <div class="order-id">Comanda #{{ c.id }}</div>
+                <div class="order-date">{{ c.data }}</div>
+            </div>
+
+            <div class="order-bottom">
+                <div class="order-status">
+                   <span class="status-badge status-{{ c.status }}">{{ c.status }}</span>
+                </div>
+                <div class="order-total">{{ c.total }} lei</div>
+                <a href="/cont/comanda/{{ c.id }}" class="order-link">VEZI</a>
+            </div>
+
+        </div>
+
+        {% endfor %}
+        </div>
+        {% else %}
+            <p>Nu ai comenzi încă.</p>
+        {% endif %}
+
+    </div>
+</div>
+
+</body>
+</html>

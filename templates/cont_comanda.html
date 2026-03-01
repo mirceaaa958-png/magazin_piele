@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comanda</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="account-page">
+    <div class="account-box">
+
+        <div class="order-header">
+
+            <div class="order-title">
+                COMANDA #{{ c.id }}
+            </div>
+
+            <div>
+                <span class="order-status-badge order-{{ c.status }}">
+                    {{ c.status }}
+                </span>
+
+                <span class="order-date">
+                    {{ c.data }}
+                </span>
+            </div>
+
+        </div>
+
+        <div class="order-products">
+        {% for p in c.produse %}
+
+            <div class="order-product">
+
+                <img src="{{ p.imagine }}" class="order-img">
+
+                <div>
+                    <div class="order-name">{{ p.nume }}</div>
+                    <div class="order-qty">Cantitate: {{ p.cant }}</div>
+                </div>
+
+                <div class="order-price">
+                    {{ p.subtotal }} lei
+                </div>
+
+            </div>
+
+        {% endfor %}
+        </div>
+
+        <div class="order-total-big">
+            Total {{ c.total }} lei
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

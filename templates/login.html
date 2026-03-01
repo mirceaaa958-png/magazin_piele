@@ -18,12 +18,12 @@
                 <div class="auth-tab" onclick="showTab('register')">Creează cont</div>
             </div>
 
-            <div id="login" class="auth-box">
+            <form id="login" class="auth-box" method="post" action="/login">
                 <label>Email *</label>
-                <input type="email" class="auth-input">
+                <input type="email" name="email" class="auth-input" required>
 
                 <label>Parolă *</label>
-                <input type="password" class="auth-input">
+                <input type="password" name="parola" class="auth-input" required>
 
                 <div class="auth-row">
                     <a href="#" class="auth-link">Ai uitat parola?</a>
@@ -35,7 +35,7 @@
                     Ține-mă minte pentru o experiență personalizată
                 </label>
 
-                <button class="auth-btn">AUTENTIFICARE</button>
+                <button type="submit" class="auth-btn">AUTENTIFICARE</button>
 
                 <a href="javascript:history.back()" class="auth-back">
                     <svg viewBox="0 0 100 10" preserveAspectRatio="none">
@@ -43,7 +43,7 @@
                        <polyline points="10,1 0,5 10,9"/>
                     </svg>
                 </a>
-            </div>
+            </form>
 
             <div id="register" class="auth-box" style="display:none;">
                 <label>Nume *</label>
