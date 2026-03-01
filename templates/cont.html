@@ -10,22 +10,46 @@
 
     <div class="account-box">
 
+        <div class="brand-title">
+            LETHARÉ
+        </div>
+
         <div class="account-heading">
             CONTUL MEU
         </div>
 
         <div class="account-welcome">
-            Bun venit, {{ session.client_nume }}
+            Bun venit, {{ session['client_nume'] }}
+        </div>
+
+        <div class="profile-cards">
+
+            <div class="profile-card">
+                <div class="profile-label">NUME</div>
+                <div class="profile-value">{{ client['nume'] }}</div>
+            </div>
+
+            <div class="profile-card">
+                <div class="profile-label">EMAIL</div>
+                <div class="profile-value">{{ client['email'] }}</div>
+            </div>
+
+            <div class="profile-card">
+                <div class="profile-label">TELEFON</div>
+                <div class="profile-value">{{ client['telefon'] }}</div>
+            </div>
+
+            <div class="profile-card">
+                <div class="profile-label">ADRESĂ</div>
+                <div class="profile-value">{{ client['adresa'] }}</div>
+            </div>
+
         </div>
 
         <div class="account-links">
 
             <a href="/cont/comenzi" class="account-btn">
                 COMENZILE MELE
-            </a>
-
-            <a href="#" class="account-btn">
-                DATELE MELE
             </a>
 
             <a href="/logout" class="account-btn">

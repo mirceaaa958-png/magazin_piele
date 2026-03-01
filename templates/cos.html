@@ -6,19 +6,36 @@
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="nav-left">LETHARÉ</div>
+    <nav class="navbar">
+        <div class="nav-left">LETHARÉ</div>
 
-    <div class="nav-center">
-        <a href="/femei">Femei</a>
-        <a href="/barbati">Bărbați</a>
-        <a href="/copii">Copii</a>
-    </div>
+        <div class="nav-center">
+            <a href="/femei">Femei</a>
+            <a href="/barbati">Bărbați</a>
+            <a href="/copii">Copii</a>
+        </div>
 
-    <div class="nav-right">
-        <a href="/cos">Coș</a>
-    </div>
-</nav>
+        <div class="nav-right">
+            <svg viewBox="0 0 24 24" class="icon">
+                <circle cx="11" cy="11" r="7" fill="none"/>
+                <line x1="16.5" y1="16.5" x2="21" y2="21"/>
+            </svg>
+
+            <a href="/login" class="icon-link">
+                <svg viewBox="0 0 24 24" class="icon">
+                    <circle cx="12" cy="8" r="4" fill="none"/>
+                    <path d="M4 20c2-4 14-4 16 0" fill="none"/>
+                </svg>
+            </a>
+
+            <a href="/cos" class="icon-link">
+                <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="black" stroke-width="1.5">
+                    <rect x="5" y="7" width="14" height="13"/>
+                    <path d="M9 7a3 3 0 0 1 6 0"/>
+                </svg>
+            </a>
+        </div>
+    </nav>
 
 <div class="cos-page">
 
@@ -58,8 +75,18 @@
            Finalizează comanda
         </a>
     {% else %}
-        <div class="cos-empty">
-            Coșul este gol
+        <div class="empty-cart">
+            <svg class="empty-cart-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M6 7h12l-1 13H7L6 7Z" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+
+            <div class="empty-cart-title">COȘUL TĂU ESTE GOL</div>
+            <div class="empty-cart-sub">Descoperă colecția noastră din piele naturală</div>
+
+            <a href="{{ session.get('last_shop', '/femei') }}" class="empty-cart-btn">
+                CONTINUĂ CUMPĂRĂTURILE
+            </a>
         </div>
     {% endif %}
 

@@ -1,30 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Creare cont</title>
+    <title>Creare cont · LETHARÉ</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-<h1>Creare cont</h1>
+<div class="auth-page">
 
-<form method="post">
-    <label>Nume</label><br>
-    <input type="text" name="nume" required><br><br>
+    <div class="auth-box">
 
-    <label>Email</label><br>
-    <input type="email" name="email" required><br><br>
+        <div class="auth-heading">
+            CREEAZĂ CONT
+        </div>
 
-    <label>Telefon</label><br>
-    <input type="text" name="telefon"><br><br>
+        <form method="POST">
 
-    <label>Parola</label><br>
-    <input type="password" name="parola" required><br><br>
+            <input type="text" name="nume" placeholder="Nume" class="auth-input" required>
+            <input type="email" name="email" placeholder="Email" class="auth-input" required>
+            <input type="text" name="telefon" placeholder="Telefon" class="auth-input">
+            <input type="text" name="adresa" placeholder="Adresă" class="auth-input">
+            <input type="password" name="parola" placeholder="Parolă" class="auth-input" required>
 
-    <button type="submit">Creează cont</button>
-</form>
+            <button class="auth-btn">
+                CREEAZĂ CONT
+            </button>
 
-<p>Ai deja cont? <a href="/login">Login</a></p>
+        </form>
+
+        <div class="auth-switch">
+            Ai deja cont?
+            <a href="/login">Autentificare</a>
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>

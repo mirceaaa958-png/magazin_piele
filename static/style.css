@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap');
 html, body {
     margin: 0;
     padding: 0;
@@ -107,27 +108,40 @@ h1 {
     background: white;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding: 0 60px;
     box-sizing: border-box;
     z-index: 100;
 }
 
 .nav-left {
-    font-size: 28px;
-    letter-spacing: 8px;
-    font-weight: 500;
+    font-family: "Playfair Display", "Times New Roman", serif;
+    font-weight: 700;
+    letter-spacing: 3px;
+    font-size: 30px;
+}
+
+.nav-center {
+    margin-left: 40px;
+    display: flex;
+    gap: 26px;
 }
 
 .nav-center a {
-    margin: 0 20px;
     text-decoration: none;
-    color: black;
-    font-size: 16px;
+    color: #111;
+    font-size: 13px;
     letter-spacing: 2px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.nav-center a:hover {
+    opacity: 0.6;
 }
 
 .nav-right {
+    margin-left: auto;
     display: flex;
     align-items: center;
     gap: 22px;
@@ -217,7 +231,7 @@ h1 {
     width: 520px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
 }
 
 .auth-box label {
@@ -227,10 +241,10 @@ h1 {
 }
 
 .auth-input {
-    height: 52px;
+    height: 44px;
     border: 1px solid #cfcfcf;
     padding: 0 14px;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .auth-row {
@@ -258,8 +272,9 @@ h1 {
 }
 
 .auth-btn {
-    margin-top: 20px;
-    height: 56px;
+    margin-top: 10px;
+    height: 44px;
+    font-size: 13px;
     background: #0b2a4a;
     color: white;
     border: none;
@@ -1073,4 +1088,93 @@ body {
 
 .btn-continue:hover {
     color: #000;
+}
+.empty-cart {
+    text-align: center;
+    padding: 120px 20px;
+}
+
+.empty-cart-icon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 25px;
+    color: #111;
+}
+
+.empty-cart-title {
+    font-family: "Playfair Display", serif;
+    font-size: 26px;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+}
+
+.empty-cart-sub {
+    color: #777;
+    margin-bottom: 30px;
+}
+
+.empty-cart-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border: 1px solid #111;
+    text-decoration: none;
+    color: #111;
+    letter-spacing: 2px;
+    font-size: 13px;
+}
+
+.empty-cart-btn:hover {
+    background: #111;
+    color: white;
+}
+.account-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.account-input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #111;
+    background: #f5f5f5;
+    font-family: inherit;
+    letter-spacing: 1px;
+}
+.profile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 25px 0 20px 0;
+}
+
+.profile-card {
+    border: 1px solid #111;
+    padding: 14px 16px;
+    background: #f7f7f7;
+}
+
+.profile-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #777;
+    margin-bottom: 6px;
+}
+
+.profile-value {
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+.brand-title {
+    font-family: "Playfair Display", serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+}
+
+.account-heading {
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
 }

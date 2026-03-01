@@ -71,6 +71,20 @@ def copii():
     session["last_shop"] = request.path
     produse = produse_cu_highlight("Copii")
     return render_template("categorie.html", categorie="Copii", produse=produse)
+@app.route("/accesorii")
+def accesorii():
+    session["last_shop"] = "/accesorii"
+
+    conn = sqlite3.connect("magazin.db")
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM produse WHERE LOWER(categorie)='accesorii'")
+    produse = c.fetchall()
+
+    conn.close()
+
+    return render_template("categorie.html", produse=produse, titlu="Accesorii")
 @app.route("/produs/<int:id>")
 def produs(id):
     db = get_db()
@@ -213,20 +227,26 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        nume = request.form["nume"]
-        email = request.form["email"]
-        parola = request.form["parola"]
-        telefon = request.form["telefon"]
+        nume = request.form.get("nume")
+        email = request.form.get("email")
+        parola = request.form.get("parola")
+        telefon = request.form.get("telefon")
+        adresa = request.form.get("adresa")
 
         db = get_db()
+
         try:
             db.execute(
-                "INSERT INTO clienti (nume, email, parola, telefon) VALUES (?, ?, ?, ?)",
-                (nume, email, parola, telefon)
+                """
+                INSERT INTO clienti (nume, email, parola, telefon, adresa)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (nume, email, parola, telefon, adresa)
             )
             db.commit()
             return redirect("/login")
-        except:
+
+        except Exception:
             return "Email deja existent"
 
     return render_template("register.html")
@@ -237,7 +257,17 @@ def cont():
     if "client_id" not in session:
         return redirect("/login")
 
-    return render_template("cont.html")
+    conn = sqlite3.connect("magazin.db")
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM clienti WHERE id=?", (session["client_id"],))
+    client = c.fetchone()
+
+    conn.close()
+
+    return render_template("cont.html", client=client)
+
 @app.route("/logout")
 def logout():
     session.pop("client_id", None)

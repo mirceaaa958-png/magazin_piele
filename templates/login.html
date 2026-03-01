@@ -18,6 +18,7 @@
                 <div class="auth-tab" onclick="showTab('register')">Creează cont</div>
             </div>
 
+            <!-- LOGIN -->
             <form id="login" class="auth-box" method="post" action="/login">
                 <label>Email *</label>
                 <input type="email" name="email" class="auth-input" required>
@@ -30,11 +31,6 @@
                     <span class="auth-required">*Obligatoriu</span>
                 </div>
 
-                <label class="auth-remember">
-                    <input type="checkbox">
-                    Ține-mă minte pentru o experiență personalizată
-                </label>
-
                 <button type="submit" class="auth-btn">AUTENTIFICARE</button>
 
                 <a href="javascript:history.back()" class="auth-back">
@@ -45,30 +41,30 @@
                 </a>
             </form>
 
-            <div id="register" class="auth-box" style="display:none;">
+            <!-- REGISTER -->
+            <form id="register" class="auth-box" method="post" action="/register" style="display:none;">
+
                 <label>Nume *</label>
-                <input type="text" class="auth-input">
+                <input type="text" name="nume" class="auth-input" required>
 
                 <label>Email *</label>
-                <input type="email" class="auth-input">
+                <input type="email" name="email" class="auth-input" required>
+
+                <label>Telefon</label>
+                <input type="text" name="telefon" class="auth-input">
+
+                <label>Adresă</label>
+                <input type="text" name="adresa" class="auth-input">
 
                 <label>Parolă *</label>
-                <input type="password" class="auth-input">
-
-                <label>Confirmă parola *</label>
-                <input type="password" class="auth-input">
+                <input type="password" name="parola" class="auth-input" required>
 
                 <div class="auth-row">
                     <span></span>
                     <span class="auth-required">*Obligatoriu</span>
                 </div>
 
-                <label class="auth-remember">
-                    <input type="checkbox">
-                    Sunt de acord cu termenii și condițiile
-                </label>
-
-                <button class="auth-btn">CREEAZĂ CONT</button>
+                <button type="submit" class="auth-btn">CREEAZĂ CONT</button>
 
                 <a href="javascript:history.back()" class="auth-back">
                     <svg viewBox="0 0 100 10" preserveAspectRatio="none">
@@ -76,7 +72,8 @@
                        <polyline points="10,1 0,5 10,9"/>
                     </svg>
                 </a>
-            </div>
+
+            </form>
 
         </div>
     </div>
