@@ -158,16 +158,16 @@ def checkout():
         email = request.form["email"]
         telefon = request.form["telefon"]
         adresa = request.form["adresa"]
-
+        produse_cmd = str(cos)
         db.execute(
-            "INSERT INTO comenzi (nume, email, telefon, adresa, total, data) VALUES (?, ?, ?, ?, ?, datetime('now'))",
-            (nume, email, telefon, adresa, total)
-        )
+            "INSERT INTO comenzi (nume, email, telefon, adresa, total, data, produse) VALUES (?, ?, ?, ?, ?, datetime('now'), ?)",
+            (nume, email, telefon, adresa, total, produse_cmd)
+       )
         db.commit()
 
         session["cos"] = {}
         return render_template("confirmare.html", total=total)
-
+        
     return render_template("checkout.html", produse=produse, total=total)
 
 @app.route("/login")
@@ -190,7 +190,99 @@ def admin():
         produse = db.execute("SELECT * FROM produse").fetchall()
 
     return render_template("admin.html", produse=produse, categorie=categorie)
+@app.route("/admin/comenzi")
+def admin_comenzi():
+    db = get_db()
+    rows = db.execute(
+        "SELECT * FROM comenzi ORDER BY data DESC"
+    ).fetchall()
 
+    comenzi = []
+
+    for c in rows:
+        produse_list = []
+
+        if c["produse"]:
+            cos = eval(c["produse"])
+
+            ids = [int(i) for i in cos.keys()]
+            if ids:
+                query = f"SELECT id, nume FROM produse WHERE id IN ({','.join(['?']*len(ids))})"
+                produse_db = db.execute(query, ids).fetchall()
+
+                nume_map = {p["id"]: p["nume"] for p in produse_db}
+
+                for pid, cant in cos.items():
+                    nume = nume_map.get(int(pid), "Produs șters")
+                    produse_list.append(f"{nume} — x{cant}")
+
+        comenzi.append({
+            "id": c["id"],
+            "nume": c["nume"],
+            "email": c["email"],
+            "telefon": c["telefon"],
+            "total": c["total"],
+            "data": c["data"],
+            "status": c["status"],
+            "produse": produse_list
+      })
+
+    return render_template("admin_comenzi.html", comenzi=comenzi)
+@app.route("/admin/comanda/<int:id>")
+def admin_comanda(id):
+    db = get_db()
+
+    c = db.execute(
+        "SELECT * FROM comenzi WHERE id=?",
+        (id,)
+    ).fetchone()
+
+    produse_list = []
+
+    if c["produse"]:
+        cos = eval(c["produse"])
+
+        ids = [int(i) for i in cos.keys()]
+        if ids:
+            query = f"SELECT id, nume, pret FROM produse WHERE id IN ({','.join(['?']*len(ids))})"
+            produse_db = db.execute(query, ids).fetchall()
+
+            prod_map = {p["id"]: p for p in produse_db}
+
+            for pid, cant in cos.items():
+                p = prod_map.get(int(pid))
+                if p:
+                    produse_list.append({
+                        "nume": p["nume"],
+                        "pret": p["pret"],
+                        "cant": cant,
+                        "subtotal": p["pret"] * cant
+                    })
+
+    comanda = {
+        "id": c["id"],
+        "nume": c["nume"],
+        "email": c["email"],
+        "telefon": c["telefon"],
+        "adresa": c["adresa"],
+        "total": c["total"],
+        "data": c["data"],
+        "produse": produse_list
+    }
+
+    return render_template("admin_comanda.html", c=comanda)
+@app.route("/admin/comanda/status/<int:id>", methods=["POST"])
+def admin_comanda_status(id):
+    status = request.form["status"]
+
+    db = get_db()
+    db.execute(
+        "UPDATE comenzi SET status=? WHERE id=?",
+        (status, id)
+    )
+    db.commit()
+
+    return redirect("/admin/comenzi")
 @app.route("/admin/sterge/<int:id>")
 def admin_sterge(id):
     db = get_db()
@@ -319,7 +411,14 @@ def init_db():
         db.execute("ALTER TABLE produse ADD COLUMN highlight INTEGER DEFAULT 0")
     except:
         pass
-
+    try:
+        db.execute("ALTER TABLE comenzi ADD COLUMN produse TEXT")
+    except:
+        pass
+    try:
+        db.execute("ALTER TABLE comenzi ADD COLUMN status TEXT DEFAULT 'Noua'")
+    except:
+        pass
     db.commit()
 
 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comenzi</title>
+    <style>
+        body { font-family: Arial; padding: 40px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border-bottom: 1px solid #ddd; }
+        th { text-align: left; }
+        .box { background:#f9f9f9; padding:10px; margin-top:5px; }
+    </style>
+</head>
+<body>
+
+<h1>Comenzi</h1>
+<div class="admin-nav">
+    <a href="/admin" class="tab">Produse</a>
+    <a href="/admin/comenzi" class="tab active">Comenzi</a>
+</div>
+<table>
+<tr>
+    <th>ID</th>
+    <th>Client</th>
+    <th>Total</th>
+    <th>Status</th>
+    <th>Data</th>
+    <th>Produse</th>
+</tr>
+
+{% for c in comenzi %}
+<tr>
+    <td>
+    <a href="/admin/comanda/{{ c.id }}">#{{ c.id }}</a>
+    </td>
+    <td>
+        {{ c.nume }}<br>
+        {{ c.email }}<br>
+        {{ c.telefon }}
+    </td>
+    <td>{{ c.total }} lei</td>
+    <td>
+    <form method="post" action="/admin/comanda/status/{{ c.id }}">
+    <select name="status" onchange="this.form.submit()">
+    <option {% if c.status=='Noua' %}selected{% endif %}>Noua</option>
+    <option {% if c.status=='Procesare' %}selected{% endif %}>Procesare</option>
+    <option {% if c.status=='Livrata' %}selected{% endif %}>Livrata</option>
+    <option {% if c.status=='Anulata' %}selected{% endif %}>Anulata</option>
+    </select>
+    </form>
+    </td>
+    <td>{{ c.data }}</td>
+    <td>
+        <div class="box">
+            {% for p in c.produse %}
+            {{ p }}<br>
+            {% endfor %}
+        </div>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

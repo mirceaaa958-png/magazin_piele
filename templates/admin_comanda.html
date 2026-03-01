@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comandă</title>
+    <style>
+        body { font-family: Arial; padding: 40px; }
+        table { width: 100%; border-collapse: collapse; margin-top:20px;}
+        th, td { padding: 10px; border-bottom: 1px solid #ddd; }
+        th { text-align: left; }
+    </style>
+</head>
+<body>
+
+<h1>Comanda #{{ c.id }}</h1>
+
+<p>
+<b>Client:</b> {{ c.nume }}<br>
+<b>Email:</b> {{ c.email }}<br>
+<b>Telefon:</b> {{ c.telefon }}<br>
+<b>Adresă:</b> {{ c.adresa }}<br>
+<b>Data:</b> {{ c.data }}<br>
+</p>
+
+<h2>Produse</h2>
+
+<table>
+<tr>
+    <th>Produs</th>
+    <th>Preț</th>
+    <th>Cant</th>
+    <th>Subtotal</th>
+</tr>
+
+{% for p in c.produse %}
+<tr>
+    <td>{{ p.nume }}</td>
+    <td>{{ p.pret }} lei</td>
+    <td>{{ p.cant }}</td>
+    <td>{{ p.subtotal }} lei</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<h2>Total: {{ c.total }} lei</h2>
+
+</body>
+</html>
